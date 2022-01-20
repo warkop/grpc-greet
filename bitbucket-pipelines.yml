@@ -1,4 +1,4 @@
-image: ************************** # Choose an image matching your project needs
+image: golang:latest # Choose an image matching your project needs
 
 clone:
   depth: full              # SonarCloud scanner needs the full history to assign issues properly
