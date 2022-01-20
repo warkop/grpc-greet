@@ -1,23 +1,31 @@
-#  Template Go (Golang) build
+image: ************************** # Choose an image matching your project needs
 
-#  This template allows you to validate your Go (Golang) code.
-#  The workflow allows running tests, build and code linting on the default branch.
+clone:
+  depth: full              # SonarCloud scanner needs the full history to assign issues properly
 
-image: golang:1.17
+definitions:
+  caches:
+    sonar: ~/.sonar/cache  # Caching SonarCloud artifacts will speed up your build
+  steps:
+    - step: &build-test-sonarcloud
+        name: Build, test and analyze on SonarCloud
+        caches:
+          - **************************           # See https://confluence.atlassian.com/bitbucket/caching-dependencies-895552876.html
+          - sonar
+        script:
+          - **************************           # Build your project and run
+          - pipe: sonarsource/sonarcloud-scan:1.2.1
+    - step: &check-quality-gate-sonarcloud
+        name: Check the Quality Gate on SonarCloud
+        script:
+          - pipe: sonarsource/sonarcloud-quality-gate:0.1.4
 
-pipelines:
-  default:
-    - parallel:
-      - step:
-          name: Test and Build
-          script:
-            - mkdir test-reports
-            - go get -u github.com/jstemmer/go-junit-report
-            - go test tests/* -v 2>&1 | go-junit-report > test-reports/report.xml
-            # Build compiles the packages
-            - go build src/*
-      - step:
-          name: Lint code
-          image: golangci/golangci-lint:v1.31.0
-          script:
-            - golangci-lint run -v
+pipelines:                 # More info here: https://confluence.atlassian.com/bitbucket/configure-bitbucket-pipelines-yml-792298910.html
+  branches:
+    master:
+      - step: *build-test-sonarcloud
+      - step: *check-quality-gate-sonarcloud
+  pull-requests:
+    '**':
+      - step: *build-test-sonarcloud
+      - step: *check-quality-gate-sonarcloud
