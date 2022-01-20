@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"grpc-greet/greet/greet_client/grpc_client"
+	"grpc-greet/greet/greetpb"
 	"io"
 	"log"
 	"time"
@@ -23,20 +23,19 @@ func main() {
 
 	defer cc.Close()
 
-	c := grpc_client.NewGreetServiceClient(cc)
+	c := greetpb.NewGreetServiceClient(cc)
 
-	// doUnary(c)
-	// doServerStreaming(c)
-	// doClientStreaming(c)
-	// doBiDiStreaming(c)
+	doUnary(c)
+	doServerStreaming(c)
+	doClientStreaming(c)
+	doBiDiStreaming(c)
 	doUnaryWithDeadline(c, 5*time.Second)
-	doUnaryWithDeadline(c, 1*time.Second)
 }
 
-func doUnary(c grpc_client.GreetServiceClient) {
+func doUnary(c greetpb.GreetServiceClient) {
 	fmt.Println("Starting to do a Unary RPC...")
-	req := &grpc_client.GreetRequest{
-		Greeting: &grpc_client.Greeting{
+	req := &greetpb.GreetRequest{
+		Greeting: &greetpb.Greeting{
 			FirstName: "Stephane",
 			LastName:  "Maarek",
 		},
@@ -49,10 +48,10 @@ func doUnary(c grpc_client.GreetServiceClient) {
 	log.Printf("Response from Greet: %v", res.Result)
 }
 
-func doServerStreaming(c grpc_client.GreetServiceClient) {
+func doServerStreaming(c greetpb.GreetServiceClient) {
 	fmt.Println("Starting to do server streaming RPC...")
-	req := &grpc_client.GreetManyTimesRequest{
-		Greeting: &grpc_client.Greeting{
+	req := &greetpb.GreetManyTimesRequest{
+		Greeting: &greetpb.Greeting{
 			FirstName: "Stephane",
 			LastName:  "Maarek",
 		},
@@ -76,32 +75,32 @@ func doServerStreaming(c grpc_client.GreetServiceClient) {
 	}
 }
 
-func doClientStreaming(c grpc_client.GreetServiceClient) {
+func doClientStreaming(c greetpb.GreetServiceClient) {
 	fmt.Println("Starting to do client streaming RPC...")
 
-	requests := []*grpc_client.LongGreetRequest{
+	requests := []*greetpb.LongGreetRequest{
 		{
-			Greeting: &grpc_client.Greeting{
+			Greeting: &greetpb.Greeting{
 				FirstName: "Roger",
 			},
 		},
 		{
-			Greeting: &grpc_client.Greeting{
+			Greeting: &greetpb.Greeting{
 				FirstName: "John",
 			},
 		},
 		{
-			Greeting: &grpc_client.Greeting{
+			Greeting: &greetpb.Greeting{
 				FirstName: "Dimitri",
 			},
 		},
 		{
-			Greeting: &grpc_client.Greeting{
+			Greeting: &greetpb.Greeting{
 				FirstName: "Siska",
 			},
 		},
 		{
-			Greeting: &grpc_client.Greeting{
+			Greeting: &greetpb.Greeting{
 				FirstName: "Yuri",
 			},
 		},
@@ -126,7 +125,7 @@ func doClientStreaming(c grpc_client.GreetServiceClient) {
 	fmt.Printf("LongGreet Response: %v", res)
 }
 
-func doBiDiStreaming(c grpc_client.GreetServiceClient) {
+func doBiDiStreaming(c greetpb.GreetServiceClient) {
 	fmt.Println("Starting to do BiDi streaming RPC...")
 
 	// we create a stream by invoking the client
@@ -136,29 +135,29 @@ func doBiDiStreaming(c grpc_client.GreetServiceClient) {
 		return
 	}
 
-	requests := []*grpc_client.GreetEveryoneRequest{
+	requests := []*greetpb.GreetEveryoneRequest{
 		{
-			Greeting: &grpc_client.Greeting{
+			Greeting: &greetpb.Greeting{
 				FirstName: "Roger",
 			},
 		},
 		{
-			Greeting: &grpc_client.Greeting{
+			Greeting: &greetpb.Greeting{
 				FirstName: "John",
 			},
 		},
 		{
-			Greeting: &grpc_client.Greeting{
+			Greeting: &greetpb.Greeting{
 				FirstName: "Dimitri",
 			},
 		},
 		{
-			Greeting: &grpc_client.Greeting{
+			Greeting: &greetpb.Greeting{
 				FirstName: "Siska",
 			},
 		},
 		{
-			Greeting: &grpc_client.Greeting{
+			Greeting: &greetpb.Greeting{
 				FirstName: "Yuri",
 			},
 		},
@@ -198,10 +197,10 @@ func doBiDiStreaming(c grpc_client.GreetServiceClient) {
 	<-waitc
 }
 
-func doUnaryWithDeadline(c grpc_client.GreetServiceClient, timeout time.Duration) {
+func doUnaryWithDeadline(c greetpb.GreetServiceClient, timeout time.Duration) {
 	fmt.Println("Starting to do a UnaryWithDeadline RPC...")
-	req := &grpc_client.GreetWithDeadlineRequest{
-		Greeting: &grpc_client.Greeting{
+	req := &greetpb.GreetWithDeadlineRequest{
+		Greeting: &greetpb.Greeting{
 			FirstName: "Stephane",
 			LastName:  "Maarek",
 		},
