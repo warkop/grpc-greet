@@ -12,7 +12,15 @@ definitions:
         caches:
           - sonar
         script:
+          - go mod download
+          - go build greet/greet_server/server.go
+          - go build greet/greet_client/client.go
           - pipe: sonarsource/sonarcloud-scan:1.2.1
+    - step:
+        name: Lint code
+        image: golangci/golangci-lint:v1.31.0
+        script:
+          - golangci-lint run -v
     - step: &check-quality-gate-sonarcloud
         name: Check the Quality Gate on SonarCloud
         script:
