@@ -12,7 +12,7 @@ definitions:
         caches:
           - sonar
         script:
-+         - go build .
+          - go build .
           - pipe: sonarsource/sonarcloud-scan:1.2.1
     - step: &check-quality-gate-sonarcloud
         name: Check the Quality Gate on SonarCloud
