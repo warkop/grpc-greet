@@ -10,10 +10,9 @@ definitions:
     - step: &build-test-sonarcloud
         name: Build, test and analyze on SonarCloud
         caches:
-          - **************************           # See https://confluence.atlassian.com/bitbucket/caching-dependencies-895552876.html
           - sonar
         script:
-          - **************************           # Build your project and run
++         - go build .
           - pipe: sonarsource/sonarcloud-scan:1.2.1
     - step: &check-quality-gate-sonarcloud
         name: Check the Quality Gate on SonarCloud
